@@ -1,0 +1,14 @@
+jupyter
+matplotlib
+scikit-learn
+pandas
+graphviz
+pydot
+tensorflow
+torch
+torchvision
+torchaudio
+torchinfo
+jax
+jaxlib
+autopep8
