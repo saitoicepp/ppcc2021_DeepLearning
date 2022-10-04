@@ -1,6 +1,11 @@
 # 粒子物理コンピューティングサマースクール 「Deep Learning」 講習資料
 粒子物理コンピューティングサマースクールの講習 「Deep Learning 基礎編」、「Deep Learning 発展編」 のための講習資料です。
 
+## スライド
+- [Deep Learning 基礎編](https://drive.google.com/file/d/1-gYWq_GdjKd-A8EPN82_IS8pzx9MacNz)
+- [Deep Learning 応用編](https://drive.google.com/file/d/1-Q8wsDvtjDqY5NA6rFU53nJxWSfzuYeP)
+- [Jupyter notebookの使い方](https://drive.google.com/file/d/1-YJMsg8i4_TP1cjM0vXyoi-SMXd705ap/view?usp=sharing)
+
 ## 構成
 - basic: 「Deep Learning 基礎編」のためのJupyter notebookです。
   - メインの講習資料: [DeepLearning.ipynb](basic/DeepLearning.ipynb)
