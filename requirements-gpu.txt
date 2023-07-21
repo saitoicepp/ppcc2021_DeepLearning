@@ -1,0 +1,16 @@
+jupyter
+matplotlib
+scikit-learn
+pandas
+graphviz
+pydot
+autopep8
+tensorflow
+--extra-index-url https://download.pytorch.org/whl/cu118
+torch
+torchvision
+torchaudio
+torchinfo
+-f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+jax==0.4.13
+jaxlib==0.4.13+cuda11.cudnn86
