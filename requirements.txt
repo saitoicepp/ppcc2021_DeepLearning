@@ -12,3 +12,5 @@ torchinfo
 jax
 jaxlib
 autopep8
+ipympl
+japanize-matplotlib
