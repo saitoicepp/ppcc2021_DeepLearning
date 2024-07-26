@@ -3,12 +3,10 @@ import gc
 import japanize_matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-import torch.nn as nn
 from matplotlib.widgets import Slider
 from numpy.random import default_rng
-from torch import from_numpy
-
-import tensorflow as tf
+import torch
+import torch.nn as nn
 
 
 def sigmoid(x):
@@ -96,7 +94,7 @@ def plot_datapoint(x, t, ax):
 
 
 # predictionメソッドの等高線プロット(fill)を作成する
-def plot_prediction(prediction, *args, ax, ngrid=100):
+def plot_prediction(prediction, *args, ax, ngrid=100, with_logits=False):
     # 等高線を描くためのメッシュの生成
     # x1 = (-5, 5), x2 = (-5, 5) の範囲で100点x100点のメッシュを作成
     x1 = np.linspace(-5, 5, ngrid)
@@ -108,8 +106,12 @@ def plot_prediction(prediction, *args, ax, ngrid=100):
 
     # 関数predictionを使って入力xから出力yを計算し、等高線プロットを作成
     if isinstance(prediction, nn.Module):
-        x_tensor = from_numpy(x).float()
-        y = prediction(x_tensor, *args)
+        x_tensor = torch.from_numpy(x).float()
+        if with_logits:
+            y = prediction(x_tensor, *args)
+            y = torch.sigmoid(y)
+        else:
+            y = prediction(x_tensor, *args)
         y = y.detach().numpy()
     else:
         y = prediction(x, *args)
@@ -129,7 +131,7 @@ def plot_prediction_line(prediction, *args, ax, ngrid=100):
 
     # 関数predictionを使って入力xから出力yを計算し、等高線プロットを作成
     if isinstance(prediction, nn.Module):
-        x_tensor = from_numpy(x).float()
+        x_tensor = torch.from_numpy(x).float()
         y = prediction(x_tensor, *args)
         y = y.detach().numpy()
     else:
@@ -456,13 +458,7 @@ def plot_model_weights(model, ax):
         "Last layer",
     ]
 
-    if isinstance(model, tf.keras.Model):
-        # get only kernel (not bias)
-        values = [model.weights[i * 2].numpy().flatten() for i in iLayers]
-    elif isinstance(model, nn.Module):
-        values = [model.linears[i].weight.flatten().detach().numpy() for i in iLayers]
-    else:
-        raise NotImplementedError
+    values = [model.linears[i].weight.flatten().detach().numpy() for i in iLayers]
 
     ax.hist(values, bins=50, stacked=False, density=True, label=labels, histtype="step")
     ax.set_xlabel("weight")
@@ -475,13 +471,7 @@ def plot_model_hidden_nodes(model, x, ax):
 
     # i 番目のレイヤーの出力を取得する
     def _get_activation(model, i, x):
-        if isinstance(model, tf.keras.Model):
-            activation = tf.keras.Model(model.layers[0].input, model.layers[i].output)(x)
-            return activation.numpy()
-        elif isinstance(model, nn.Module):
-            return model(x, i).flatten().detach().numpy()
-        else:
-            raise NotImplementedError
+        return model(x, i).flatten().detach().numpy()
 
     iLayers = [0, 3, 6, 10]
     labels = [
@@ -503,20 +493,7 @@ def plot_model_weight_gradients(model, x, t, ax):
 
     # i 番目のレイヤーにつながる重み(wij)の勾配を取得する
     def _get_gradients(model, i, x, t):
-        if isinstance(model, tf.keras.Model):
-            # from tensorflow.python.eager import backprop
-
-            weights = model.layers[i].weights[0]  # get only kernel (not bias)
-            with tf.GradientTape() as tape:
-                pred = model(x)
-                loss = model.compiled_loss(tf.constant(t), pred)
-
-            gradients = tape.gradient(loss, weights)
-            return gradients.numpy()
-        elif isinstance(model, nn.Module):
-            return np.abs(model.linears[i].weight.grad.flatten().detach().numpy())
-        else:
-            raise NotImplementedError
+        return np.abs(model.linears[i].weight.grad.flatten().detach().numpy())
 
     iLayers = [0, 3, 6, 10]
     labels = [
@@ -531,3 +508,4 @@ def plot_model_weight_gradients(model, x, t, ax):
     ax.hist(grads, bins=50, stacked=False, density=True, label=labels, histtype="step")
     ax.set_xlabel("log10(|gradient of weights|)")
     ax.set_ylabel("Probability density")
+    ax.legend(loc="upper left", fontsize="x-small")

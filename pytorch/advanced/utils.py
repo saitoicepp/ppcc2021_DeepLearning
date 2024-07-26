@@ -79,8 +79,5 @@ def plot_prediction(prediction, *args, ax, ngrid=100, **kwargs):
         y = y.detach().numpy()
     else:
         y = prediction(x, *args, **kwargs)
-        import tensorflow as tf
 
-        if isinstance(y, tf.Tensor):
-            y = y.numpy()
     _ = ax.tricontourf(x[:, 0], x[:, 1], y.flatten(), levels=10)
