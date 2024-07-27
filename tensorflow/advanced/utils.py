@@ -1,8 +1,6 @@
 import japanize_matplotlib
 import numpy as np
-import torch.nn as nn
 from numpy.random import default_rng
-from torch import from_numpy
 
 
 # 二次元ガウス分布と一様分布
@@ -73,14 +71,9 @@ def plot_prediction(prediction, *args, ax, ngrid=100, **kwargs):
     x = np.array([x1v, x2v]).T
 
     # 関数predictionを使って入力xから出力yを計算し、等高線プロットを作成
-    if isinstance(prediction, nn.Module):
-        x_tensor = from_numpy(x).float()
-        y = prediction(x_tensor, *args, **kwargs)
-        y = y.detach().numpy()
-    else:
-        y = prediction(x, *args, **kwargs)
-        import tensorflow as tf
+    y = prediction(x, *args, **kwargs)
+    import tensorflow as tf
 
-        if isinstance(y, tf.Tensor):
-            y = y.numpy()
+    if isinstance(y, tf.Tensor):
+        y = y.numpy()
     _ = ax.tricontourf(x[:, 0], x[:, 1], y.flatten(), levels=10)
