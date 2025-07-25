@@ -17,3 +17,5 @@ torchinfo
 torchviz
 tqdm
 jax[cuda12]
+cupy-cuda12x
+uproot3
