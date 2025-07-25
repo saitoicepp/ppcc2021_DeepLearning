@@ -1,3 +1,9 @@
 advanced/model.png
 **.ipynb_checkpoints
-
+.vscode
+.python-version
+__pycache__
+*.csv
+env
+.venv
+.env
